@@ -47,7 +47,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] /* What goes here? */ };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
   res.render("urls_show", templateVars);
 });
 
@@ -66,12 +66,10 @@ app.get("/u/:shortURL", (req, res) => {
 const  generateRandomString = function() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
   let shortURL = [];
-  for (let i = 0; i <= 6; i++) {
+  for (let i = 0; i < 6; i++) {
     shortURL.push(characters[Math.floor(Math.random() * 62)]);
   }
   shortURL = shortURL.join('');
   
   return shortURL;
 };
-
-generateRandomString();
