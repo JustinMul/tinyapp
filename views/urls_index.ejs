@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <style>
     /* Red */
-    .btn {
-      border: 2px solid red;
-    background-color: white;
-    color: red;
-    padding: 14px 28px;
-    font-size: 16px;
-    cursor: pointer;
+    .edit {
+      border-color: #3662f4;
+      color: #3662f4;
     }
     .danger {
       border-color: #f44336;
@@ -37,6 +33,7 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope="col">Edit</th>
           <th scope="col">Delete</th>
         </tr>
       </thead>
@@ -46,12 +43,20 @@
             <td><%= url %></td>
             <td><%= urls[url] %></td>
             <td>
+              <form method="POST"  action="/urls/<%=url%>/edit">
+                <button 
+                type="submit" 
+                class="blue"> edit </button>
+                </form>
+            </td>
+            <td>
               <form method="POST"  action="/urls/<%=url%>/delete">
               <button 
               type="submit" 
               class="danger hover"> Delete </button>
               </form>
             </td>
+            
           </tr>
         <% } %>
       </tbody>

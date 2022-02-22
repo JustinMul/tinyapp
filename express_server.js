@@ -48,6 +48,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
+  
   res.render("urls_show", templateVars);
 });
 
@@ -67,6 +68,23 @@ app.post('/urls/:shortURL/delete',(req,res) => {
   let sURL = req.params.shortURL;
   delete urlDatabase[sURL];
   res.redirect('/urls');
+});
+
+
+app.post('/urls/:shortURL/edit',(req,res) => {
+  let sURL = req.params.shortURL;
+  // console.log(sURL);
+
+  // urlDatabase[sURL] = ;
+  res.redirect('/urls/' + sURL);
+});
+
+app.post('/urls/:id', (req, res) => {
+  //need to get to the key and then change the long id which is the value
+  let longURL = req.body.longURL;
+  let sURL = req.params.id;
+  urlDatabase[sURL] = longURL;
+  res.redirect('/urls/');
 });
 const  generateRandomString = function() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
