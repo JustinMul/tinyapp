@@ -3,7 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+  <style>
+    /* Red */
+    .btn {
+      border: 2px solid red;
+    background-color: white;
+    color: red;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    }
+    .danger {
+      border-color: #f44336;
+      color: red;
+    }
+    
+    .danger:hover {
+      background: #f44336;
+      color: white;
+    }
+   
+    </style>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>TinyApp</title>
@@ -17,6 +37,7 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope="col">Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -24,6 +45,13 @@
           <tr>
             <td><%= url %></td>
             <td><%= urls[url] %></td>
+            <td>
+              <form method="POST"  action="/urls/<%=url%>/delete">
+              <button 
+              type="submit" 
+              class="danger hover"> Delete </button>
+              </form>
+            </td>
           </tr>
         <% } %>
       </tbody>
