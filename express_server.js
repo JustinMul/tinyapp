@@ -71,13 +71,11 @@ app.post('/urls/:shortURL/delete',(req,res) => {
 });
 
 
-app.post('/urls/:shortURL/edit',(req,res) => {
-  let sURL = req.params.shortURL;
-  // console.log(sURL);
-
-  // urlDatabase[sURL] = ;
-  res.redirect('/urls/' + sURL);
-});
+// app.post('/urls/:shortURL/edit',(req,res) => {
+//   let sURL = req.params.shortURL;
+//   console.log(sURL);
+//   res.redirect('/urls/' + sURL);
+// });
 
 app.post('/urls/:id', (req, res) => {
   //need to get to the key and then change the long id which is the value
@@ -86,6 +84,7 @@ app.post('/urls/:id', (req, res) => {
   urlDatabase[sURL] = longURL;
   res.redirect('/urls/');
 });
+
 const  generateRandomString = function() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
   let shortURL = [];
