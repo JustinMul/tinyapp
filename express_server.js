@@ -89,8 +89,8 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.post('/login', (req,res) => {
-  const username = req.body.username;
-  res.cookie('username', username);
+  console.log(req.body);
+
   res.redirect('/urls/');
 });
 
@@ -106,6 +106,7 @@ app.post('/register', (req,res) => {
   let randomID = generateRandomString();
   users[randomID] = {'id': randomID, 'email': req.body['email'], 'password':req.body['password']};
   res.cookie("user_id",randomID);
+  
   // console.log(users);
   // console.log('BODY!!!!', req.body['email'])
   // console.log(req.cookies)
