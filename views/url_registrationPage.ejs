@@ -6,13 +6,16 @@
 <header><%- include('partials/_header') %></header>
 </div>
 
-<div class="container" method="POST">
-  <label for="uname"><b>Username</b></label>
+
+<div class="container">
+  <form class="center" action="/register" method="POST">
+  <h1>Register Account</h1>
+  <label for="uname"><b>Email Addres</b></label>
   <input type="email" placeholder="Enter email" name="email" required>
 
   <label for="psw"><b>Password</b></label>
   <input type="password" placeholder="Enter Password" name="password" required>
     
   <button type="submit">Login</button>
-  
+</form>
 </div>
