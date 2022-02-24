@@ -5,6 +5,7 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const { cookie } = require("express/lib/response");
+const req = require("express/lib/request");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -16,6 +17,7 @@ const urlDatabase = {
 };
 
 const users = {
+
 };
 
 app.get("/", (req, res) => {
@@ -89,9 +91,33 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.post('/login', (req,res) => {
-  console.log(req.body);
+  //take users and look for field that matches the email we have
+  let username = req.body['email'];
+  let pass = req.body['password'];
+  
+  for (const key in users) {
+    if (username === users[key]['email'] && pass === users[key]['password']) {
+      res.cookie("user_id",key);
+      return res.redirect('/urls/');
+    }
+  }
 
-  res.redirect('/urls/');
+  if (!emailCheck(req)) {
+    return res.status(403).send('Email not found');
+  } else {
+    return res.status(403).send('incorrect password');
+  }
+  // else if (emailCheck(req)) {
+    
+  //   if (passwordCheck(req)) {
+      
+  //     console.log('body', req.body);
+  //     console.log('cookies',req.cookies)
+  //     console.log('users', users);
+  //     res.cookie("user_id",);
+  //     return res.redirect('/urls/');
+  //   }
+  // }
 });
 
 app.post('/logout', (req,res) => {
@@ -106,12 +132,6 @@ app.post('/register', (req,res) => {
   let randomID = generateRandomString();
   users[randomID] = {'id': randomID, 'email': req.body['email'], 'password':req.body['password']};
   res.cookie("user_id",randomID);
-  
-  // console.log(users);
-  // console.log('BODY!!!!', req.body['email'])
-  // console.log(req.cookies)
-  // console.log('COOKIES', users[randomID]['email'])
-
   res.redirect('/urls/');
 });
 
@@ -133,3 +153,4 @@ const emailCheck = function(req) {
     }
   }
 };
+
