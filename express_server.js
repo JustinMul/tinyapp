@@ -6,6 +6,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const { cookie } = require("express/lib/response");
 const req = require("express/lib/request");
+const bcrypt = require('bcryptjs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -24,9 +25,9 @@ let urlDatabase = {
 
 const users = {};
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello!");
+// });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -41,7 +42,7 @@ app.get("/urls", (req, res) => {
   const userURL = urlsForUser(req.cookies.user_id);
   
   const templateVars = { urls: userURL, user: users[req.cookies.user_id]};
-
+  console.log(users)
   if (req.cookies.user_id) {
     
     res.render("urls_index", templateVars);
@@ -84,10 +85,9 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
+  
   if (!req.cookies.user_id) {
     res.send("Error: You are not logged in");
-  
   } else {
     let shortURL = generateRandomString();
     urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.cookies.user_id};
@@ -141,8 +141,10 @@ app.post('/login', (req,res) => {
   let username = req.body['email'];
   let pass = req.body['password'];
   
+  // const result = bcrypt.compareSync(pass, users[key]['password']);
+
   for (const key in users) {
-    if (username === users[key]['email'] && pass === users[key]['password']) {
+    if (username === users[key]['email'] && bcrypt.compareSync(pass, users[key]['password'])) {
       res.cookie("user_id",key);
       return res.redirect('/urls/');
     }
@@ -162,11 +164,14 @@ app.post('/logout', (req,res) => {
 });
 app.post('/register', (req,res) => {
   
+  let password = req.body['password'];
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
   if (emailCheck(req)) {
     return res.status(400).send('Bad Request');
   }
   let randomID = generateRandomString();
-  users[randomID] = {'id': randomID, 'email': req.body['email'], 'password':req.body['password']};
+  users[randomID] = {'id': randomID, 'email': req.body['email'], 'password':hashedPassword};
   res.cookie("user_id",randomID);
   res.redirect('/urls/');
 });
