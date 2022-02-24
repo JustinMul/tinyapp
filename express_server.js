@@ -40,8 +40,11 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id]};
-  console.log(urlDatabase)
-  res.render("urls_index", templateVars);
+  if (req.cookies.user_id) {
+    res.render("urls_index", templateVars);
+  } else {
+    res.render("urls_index", templateVars);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -55,8 +58,12 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.cookies.user_id]};
-  res.render("urls_show", templateVars);
+  if (urlDatabase[req.params.shortURL]) {
+    const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.cookies.user_id]};
+    res.render("urls_show", templateVars);
+  } else {
+    return res.status(400).send('Bad Request');
+  }
 });
 
 app.get("/login", (req, res) => {
@@ -83,7 +90,7 @@ app.post("/urls", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL]['longURL'];
-  console.log(longURL)
+  // console.log(longURL)
  
   res.redirect(longURL);
 });
@@ -120,17 +127,7 @@ app.post('/login', (req,res) => {
   } else {
     return res.status(403).send('incorrect password');
   }
-  // else if (emailCheck(req)) {
-    
-  //   if (passwordCheck(req)) {
-      
-  //     console.log('body', req.body);
-  //     console.log('cookies',req.cookies)
-  //     console.log('users', users);
-  //     res.cookie("user_id",);
-  //     return res.redirect('/urls/');
-  //   }
-  // }
+
 });
 
 app.post('/logout', (req,res) => {
