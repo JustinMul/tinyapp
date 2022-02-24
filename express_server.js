@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(cookieParser());
 
-const urlDatabase = {
+let urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
     userID: "aJ48lW"
@@ -22,9 +22,7 @@ const urlDatabase = {
   }
 };
 
-const users = {
-
-};
+const users = {};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -39,11 +37,17 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id]};
+ 
+  const userURL = urlsForUser(req.cookies.user_id);
+  
+  const templateVars = { urls: userURL, user: users[req.cookies.user_id]};
+
   if (req.cookies.user_id) {
+    
     res.render("urls_index", templateVars);
   } else {
-    res.render("urls_index", templateVars);
+    res.redirect("/login");
+    // return res.status(400).send('Required log in to access this page please visit http://localhost:8080/login');
   }
 });
 
@@ -58,12 +62,16 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  if (req.cookies.user_if) {
+    res.redirect('/urls');
+  }
   if (urlDatabase[req.params.shortURL]) {
     const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.cookies.user_id]};
     res.render("urls_show", templateVars);
   } else {
     return res.status(400).send('Bad Request');
   }
+  
 });
 
 app.get("/login", (req, res) => {
@@ -78,7 +86,7 @@ app.get("/register", (req, res) => {
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
   if (!req.cookies.user_id) {
-    res.send("Error: You are not logged in")
+    res.send("Error: You are not logged in");
   
   } else {
     let shortURL = generateRandomString();
@@ -96,6 +104,9 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post('/urls/:shortURL/delete',(req,res) => {
+  if (!req.cookies.user_id) {
+    res.status(400).send("Please log in");
+  }
   let sURL = req.params.shortURL;
 
   delete urlDatabase[sURL];
@@ -104,9 +115,24 @@ app.post('/urls/:shortURL/delete',(req,res) => {
 
 
 app.post('/urls/:id', (req, res) => {
+  if (!req.cookies.user_id) {
+    res.status(400).send("Please log in");
+  }
+  
+  const userURL = urlsForUser(req.cookies.user_id, urlDatabase);
+  console.log('req.params.id ', req.params.id)
+  console.log('userURL', userURL[req.params.id])
+  // if for the specific id in filteredURLS does not exist, throw error
+  if (!userURL[req.params.id]) {
+    res.status(400).send("URL does not exist");
+  }
+
+
   let longURL = req.body.longURL;
   let sURL = req.params.id;
-  urlDatabase[sURL] = longURL;
+
+  urlDatabase[sURL] = {longURL: req.body.longURL, userID: req.cookies.user_id};
+  
   res.redirect('/urls/');
 });
 
@@ -164,3 +190,25 @@ const emailCheck = function(req) {
   }
 };
 
+
+const urlsForUser = function(id) {
+  const userData = {};
+  for (const key in urlDatabase) {
+    if (urlDatabase[key]['userID'] === id) {
+      userData[key] = {longURL:urlDatabase[key]['longURL'], userID: urlDatabase[key]['userID']};
+    }
+  }
+  return userData;
+};
+
+
+// const urlDatabase = {
+//   b6UTxQ: {
+//       longURL: "https://www.tsn.ca",
+//       userID: "aJ48lW"
+//   },
+//   i3BoGr: {
+//       longURL: "https://www.google.ca",
+//       userID: "aJ48lW"
+//   }
+// };
