@@ -11,7 +11,7 @@ Registration page
 New users will be required to create profiles in order to access short urls!
 
 Login page
-![image](https://user-images.githubusercontent.com/95982839/155786858-4b7a404f-a1c9-4e06-9c5b-dcc58fcdad84.png)
+![image](https://user-images.githubusercontent.com/95982839/155787054-b8e08a43-a58a-4709-96f5-1ed674a151c4.png)
 For returning users they can log in through the login page 
 
 Homepage
